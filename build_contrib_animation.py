@@ -8,7 +8,7 @@ import io
 import math
 from pathlib import Path
 
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageDraw
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parent
@@ -78,8 +78,27 @@ def render_frames(source):
         if not page.evaluate("document.fonts.check('12px GeistPixelTriangle')"):
             raise RuntimeError("Embedded dashboard font did not load")
         original = capture(page)
-        widgets = page.locator('#date-range, #radar-chart, #donut-chart').evaluate_all(
-            "els => els.map(el => {const r=el.getBoundingClientRect(); return [r.x,r.y,r.right,r.bottom]})")
+        widget_selector = '#date-range, #radar-chart, #donut-chart'
+        widgets = page.locator(widget_selector)
+        widget_markup = widgets.evaluate_all("els => els.map(el => el.outerHTML)")
+        widget_bounds = widgets.evaluate_all(
+            "els => els.map(el => {const r=el.getBoundingClientRect(); return [r.left,r.top,r.right,r.bottom]})")
+        bar_bounds = page.locator('#isometric-grid .bar').evaluate_all(
+            "els => els.map(el => {const r=el.getBoundingClientRect(); return [r.left,r.top,r.right,r.bottom]})")
+
+        # A widget's enclosing rectangle may include calendar bars near its
+        # corners. Ignore only the bar pixels in raster checks, not the entire
+        # widget rectangle. Overshoot and anti-aliasing require a small margin.
+        protected = Image.new("L", original.size, 0)
+        draw = ImageDraw.Draw(protected)
+        for left, top, right, bottom in widget_bounds:
+            draw.rectangle((math.floor(left), math.floor(top),
+                            math.ceil(right) - 1, math.ceil(bottom) - 1), fill=255)
+        for left, top, right, bottom in bar_bounds:
+            draw.rectangle((math.floor(left) - 2, math.floor(top) - 8,
+                            math.ceil(right) + 2, math.ceil(bottom) + 2), fill=0)
+        protected_rgb = Image.merge("RGB", (protected, protected, protected))
+
         metrics = page.evaluate(INITIALIZE)
         if not metrics["cells"]:
             raise ValueError("Source SVG has no calendar cells; refusing an empty replacement")
@@ -87,11 +106,13 @@ def render_frames(source):
         for index in range(round(DURATION * 1000 / FRAME_MS) + 1):
             page.evaluate(SET_FRAME, index * FRAME_MS / 1000)
             frame = capture(page)
-            # Every non-calendar widget must be pixel-identical throughout.
-            for bounds in widgets:
-                box = tuple(math.floor(v) if i < 2 else math.ceil(v) for i, v in enumerate(bounds))
-                if ImageChops.difference(frame.crop(box), original.crop(box)).getbbox(alpha_only=False):
-                    raise AssertionError("A non-calendar widget changed")
+            # Preserve widget markup, plus every widget pixel outside regions
+            # where the animated bars can legitimately change the composite.
+            if widgets.evaluate_all("els => els.map(el => el.outerHTML)") != widget_markup:
+                raise AssertionError("A non-calendar widget's SVG markup changed")
+            changed = ImageChops.difference(frame, original).convert("RGB")
+            if ImageChops.multiply(changed, protected_rgb).getbbox():
+                raise AssertionError("A non-calendar widget changed outside animated bars")
             frames.append(frame)
         if ImageChops.difference(frames[-1], original).getbbox(alpha_only=False):
             raise AssertionError("Final frame differs from the original static SVG rendering")
