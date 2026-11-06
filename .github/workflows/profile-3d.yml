@@ -14,10 +14,10 @@ jobs:
     name: generate-github-profile-3d-contrib
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -26,6 +26,9 @@ jobs:
           python -m pip install fonttools==4.63.0 Pillow==12.2.0 playwright==1.62.0
           python -m playwright install --with-deps chromium
           python -c "import sys; sys.path.insert(0, 'assets/readme-panels'); from alpino import download_fonts; download_fonts()"
+
+      - name: Test animation validation
+        run: python -m unittest discover -s tests -v
 
       - name: Generate 3D Contribution Graph
         env:
@@ -39,4 +42,7 @@ jobs:
           git config user.name "voxelepic"
           git config user.email "voxelepic@gmail.com"
           git add profile-3d-contrib/
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(profile): auto-update 3d contribution graph [skip ci]" && git push)
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(profile): auto-update 3d contribution graph [skip ci]"
+            git push
+          fi

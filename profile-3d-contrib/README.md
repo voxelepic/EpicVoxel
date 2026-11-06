@@ -30,6 +30,10 @@ From the repository root, install the same dependencies used by Actions:
 ```sh
 python -m pip install fonttools==4.63.0 Pillow==12.2.0 playwright==1.62.0
 python -m playwright install --with-deps chromium
+python -c "import sys; sys.path.insert(0, 'assets/readme-panels'); from alpino import download_fonts; download_fonts()"
+
+# Browser regressions, including calendar bars behind transparent widget bounds.
+python -m unittest discover -s tests -v
 
 # Offline: animate the exact checked-in chart, preserving its data and dates.
 python build_contrib_animation.py --preview-dir .cache/contribution-animation
@@ -41,15 +45,17 @@ python generate_3d_contrib.py
 
 Open `preview_contrib_animation.html` in a browser. Its replay button gives each
 image a fresh local URL. The optional preview directory contains a contact sheet
-and the exact final PNG. Generation checks that non-calendar widgets never
-change, the final rendered frame is pixel-identical to the source SVG, the APNG
-decodes to that exact final frame, and the GIF decodes to its palette equivalent.
+and the exact final PNG. Generation checks that non-calendar artwork never
+changes by temporarily hiding the calendar in validation-only screenshots. This
+allows bars to move behind transparent parts of widget bounding rectangles.
+It also checks that the final rendered frame is pixel-identical to the source
+SVG, the APNG decodes to that exact final frame, and the GIF decodes to its
+palette equivalent.
 
 `.github/workflows/profile-3d.yml` refreshes the SVG and both animations together
 daily at **18:00 UTC** (23:30 India time), or via **Run workflow**. It commits the
-generated assets through the existing commit step. Failed or empty API responses
-stop generation and leave the existing images in place; the generator no longer
-substitutes placeholder activity or another authenticated user's calendar.
+generated assets as **voxelepic** (`voxelepic@gmail.com`). If the API returns no
+data or a request fails, generation stops and the previous images stay published.
 
 ## Playback and GitHub limitations
 
