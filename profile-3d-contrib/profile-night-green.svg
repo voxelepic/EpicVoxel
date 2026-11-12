@@ -411,7 +411,7 @@
     <g class="cell bar lvl-2"><polygon points="768.6,326.2 768.6,292.2 779.5,296.0 779.5,330.0" fill="#155026" /><polygon points="779.5,330.0 779.5,296.0 785.0,293.0 785.0,327.0" fill="#0e381b" /><polygon points="774.1,289.2 785.0,293.0 779.5,296.0 768.6,292.2" fill="#2ea043"/></g>
     <g class="cell empty"><polygon points="796.9,324.2 807.8,328.0 802.3,331.0 791.4,327.2" fill="#0e131a" stroke="#18202c" stroke-width="0.5"/></g>
     <g class="cell bar lvl-2"><polygon points="814.2,328.2 814.2,297.7 825.1,301.5 825.1,332.0" fill="#155026" /><polygon points="825.1,332.0 825.1,301.5 830.6,298.5 830.6,329.0" fill="#0e381b" /><polygon points="819.7,294.7 830.6,298.5 825.1,301.5 814.2,297.7" fill="#2ea043"/></g>
-    <g class="cell bar lvl-1"><polygon points="837.0,329.2 837.0,313.2 847.9,317.0 847.9,333.0" fill="#0d3319" /><polygon points="847.9,333.0 847.9,317.0 853.4,314.0 853.4,330.0" fill="#082211" /><polygon points="842.5,310.2 853.4,314.0 847.9,317.0 837.0,313.2" fill="#155328"/></g>
+    <g class="cell bar lvl-2"><polygon points="837.0,329.2 837.0,291.7 847.9,295.5 847.9,333.0" fill="#155026" /><polygon points="847.9,333.0 847.9,295.5 853.4,292.5 853.4,330.0" fill="#0e381b" /><polygon points="842.5,288.7 853.4,292.5 847.9,295.5 837.0,291.7" fill="#2ea043"/></g>
     <g class="cell empty"><polygon points="766.5,327.4 777.4,331.2 771.9,334.2 761.0,330.4" fill="#0e131a" stroke="#18202c" stroke-width="0.5"/></g>
     <g class="cell empty"><polygon points="789.3,328.4 800.2,332.2 794.7,335.2 783.8,331.4" fill="#0e131a" stroke="#18202c" stroke-width="0.5"/></g>
     <g class="cell bar lvl-2"><polygon points="806.6,332.4 806.6,294.9 817.5,298.7 817.5,336.2" fill="#155026" /><polygon points="817.5,336.2 817.5,298.7 823.0,295.7 823.0,333.2" fill="#0e381b" /><polygon points="812.1,291.9 823.0,295.7 817.5,298.7 806.6,294.9" fill="#2ea043"/></g>
@@ -440,10 +440,10 @@
     <line x1="930.0" y1="160.0" x2="858.7" y2="136.8" stroke="#222b3a" stroke-width="1"/>
 
     <!-- Radar Data Shape with Glow -->
-    <polygon points="930.0,113.6 969.7,147.1 958.5,199.2 908.3,189.9 881.3,144.2" fill="url(#radarFill)" stroke="#bffb4f" stroke-width="2" filter="url(#subtleGlow)"/>
+    <polygon points="930.0,113.3 969.7,147.1 958.5,199.2 908.3,189.9 881.3,144.2" fill="url(#radarFill)" stroke="#bffb4f" stroke-width="2" filter="url(#subtleGlow)"/>
 
     <!-- Vertex Points -->
-    <circle cx="930.0" cy="113.6" r="3.5" fill="#bffb4f" stroke="#000000" stroke-width="1.5"/>
+    <circle cx="930.0" cy="113.3" r="3.5" fill="#bffb4f" stroke="#000000" stroke-width="1.5"/>
     <circle cx="969.7" cy="147.1" r="3.5" fill="#bffb4f" stroke="#000000" stroke-width="1.5"/>
     <circle cx="958.5" cy="199.2" r="3.5" fill="#bffb4f" stroke="#000000" stroke-width="1.5"/>
     <circle cx="908.3" cy="189.9" r="3.5" fill="#bffb4f" stroke="#000000" stroke-width="1.5"/>
